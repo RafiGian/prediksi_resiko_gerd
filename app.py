@@ -7,7 +7,7 @@ import os
 # ----------------------------
 # Load model safely
 # ----------------------------
-model_path = "model_randomforest_new.pkl"
+model_path = "model_gerd_compatible.pkl"
 
 if os.path.exists(model_path):
     try:
