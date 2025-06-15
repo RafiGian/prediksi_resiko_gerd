@@ -1,14 +1,24 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
+import os
 
 # ----------------------------
-# Load model
+# Load model safely
 # ----------------------------
-with open("model_randomforest_new.pkl", "rb") as f:
-    model = pickle.load(f)
+model_path = "model_randomforest_new.pkl"
+
+if os.path.exists(model_path):
+    try:
+        with open(model_path, "rb") as f:
+            model = pickle.load(f)
+    except Exception as e:
+        st.error(f"❌ Gagal memuat model: {e}")
+        st.stop()
+else:
+    st.error(f"❌ File model '{model_path}' tidak ditemukan.")
+    st.stop()
 
 # ----------------------------
 # Setup tampilan halaman
@@ -38,13 +48,11 @@ minuman_bersoda = st.checkbox("Minuman Bersoda")
 status_merokok = st.selectbox("Status Merokok:", options=["Tidak", "Ya"])
 
 # ----------------------------
-# Data dummy mapping
+# Preprocess input
 # ----------------------------
-# NOTE: Anda harus menyesuaikan ini agar cocok dengan model Anda,
-# misalnya: pastikan urutan fitur sama dengan saat pelatihan model
 def preprocess_input():
     data = {
-        'diet_Omn': 1,  # default dummy
+        'diet_Omn': 1,
         'diet_Veg': 0,
         'diet_Vegt': 0,
         'fruit_frequency_encoded': frekuensi_makan,
